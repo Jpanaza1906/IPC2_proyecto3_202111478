@@ -1,5 +1,5 @@
 class Database():
-    def __init__(self) -> None:
+    def __init__(self):
         #Clientes
         self.clientes = []
         self.idclientes = []
