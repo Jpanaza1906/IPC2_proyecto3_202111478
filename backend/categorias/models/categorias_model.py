@@ -5,9 +5,9 @@ class Categorias():
         self.nombre = nombre
         self.descripCat = descripCat
         self.descripTrabajo = descripTrabajo
-        self.configuraciones = []
-    def asignar_configuraciones(self, configuracion):
-        self.configuraciones.append(configuracion)
+        self.idconfiguraciones = []
+    def asignar_idconfiguraciones(self, idconfiguracion):
+        self.idconfiguraciones.append(idconfiguracion)
     def gedata(self):
         configr = []
         for nconfig in self.configuraciones:

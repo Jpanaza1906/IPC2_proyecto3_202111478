@@ -7,10 +7,10 @@ class Clientes:
         self.clave = clave
         self.direccion = direccion
         self.mail = mail
-        self.instancias = []
+        self.idinstancias = []
     
-    def asignar_instancias(self, instancia):
-        self.instancias.append(instancia)
+    def asignar_idinstancias(self, idinstancia):
+        self.idinstancias.append(idinstancia)
     
     def getdata(self):
         instanciar = []

@@ -1,5 +1,4 @@
 import json
-from termios import tcdrain
 from flask import Blueprint, jsonify, request
 from db.database import tcDatabase
 from recursos.models.recursos_model import Recursos

@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, request
 from db.database import tcDatabase
 from categorias.models.categorias_model import Categorias
-from configuraciones.models.configuraciones_model import Configuraciones
 
 categorias =  Blueprint('categorias', __name__,url_prefix="/categorias")
 
