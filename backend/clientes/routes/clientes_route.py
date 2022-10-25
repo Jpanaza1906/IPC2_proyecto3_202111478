@@ -2,7 +2,7 @@ import json
 from flask import Blueprint, jsonify, request
 from db.database import tcDatabase
 from clientes.models.clientes_model import Clientes
-from instancias.model.instancias_model import Instancias
+from instancias.models.instancias_model import Instancias
 
 clientes = Blueprint('clientes', __name__, url_prefix="/clientes")
 

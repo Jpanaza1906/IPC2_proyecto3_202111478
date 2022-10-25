@@ -13,9 +13,9 @@ class Clientes:
         self.idinstancias.append(idinstancia)
     
     def getdata(self):
-        instanciar = []
-        for ninstancia in self.instancias:
-            instanciar.append(ninstancia.getdata())
+        instanciar = ""
+        for ninstancia in self.idinstancias:
+            instanciar += ninstancia +", "
         return{
             "nit" : self.id,
             "nombre" : self.nombre,
@@ -23,5 +23,5 @@ class Clientes:
             "clave": self.clave,
             "direccion": self.direccion,
             "email": self.mail,
-            "instancias": jsonify(instanciar)
+            "instancias": instanciar
         }

@@ -10,16 +10,13 @@ class Configuraciones():
         self.idrecursos.append(idrecurso)
         self.cantidadr.append(cantidad)
     def getdata(self):
-        nrecurr = []
+        nrecurr = ""
         for i in range(0,len(self.idrecursos)):
-            nrecurr.append({
-                'idrecurso': self.idrecursos[i],
-                'cantidad': self.cantidadr[i]
-            })
+            nrecurr += "[ " + self.idrecursos[i] +", " + self.cantidadr + "], "
         return{
             'id': self.id,
             'nombre': self.nombre,
             'descripcion': self.descripcion,
-            'recursos_adquiridos': jsonify(nrecurr)
+            'recursos_adquiridos': nrecurr
         }
         

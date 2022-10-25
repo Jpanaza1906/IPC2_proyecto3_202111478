@@ -8,14 +8,14 @@ class Categorias():
         self.idconfiguraciones = []
     def asignar_idconfiguraciones(self, idconfiguracion):
         self.idconfiguraciones.append(idconfiguracion)
-    def gedata(self):
-        configr = []
-        for nconfig in self.configuraciones:
-            configr.append(nconfig.getdata())
+    def getdata(self):
+        configs = ""
+        for nconfig in self.idconfiguraciones:
+            configs += nconfig + ", "
         return{
             "id" : self.id,
             "nombre" : self.nombre,
             "descripCat": self.descripCat,
             "descripTrabajo": self.descripTrabajo,
-            "configuraciones": jsonify(configr)
+            "configuraciones": configs
         }
