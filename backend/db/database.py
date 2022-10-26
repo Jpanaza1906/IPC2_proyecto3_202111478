@@ -186,7 +186,7 @@ class Database():
                     self.categorias.pop(cont)
                     self.idcategorias.pop(cont)
                     return True
-            cont += 1
+                cont += 1
         return False
                     
     #buscar
@@ -242,7 +242,7 @@ class Database():
                     self.configuraciones.pop(cont)
                     self.idconfiguraciones.pop(cont)
                     return True
-            cont += 1
+                cont += 1
         return False
                     
     #buscar
@@ -299,7 +299,7 @@ class Database():
                     self.instancias.pop(cont)
                     self.idinstancias.pop(cont)
                     return True
-            cont += 1
+                cont += 1
         return False
                     
     #buscar

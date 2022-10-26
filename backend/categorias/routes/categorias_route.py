@@ -53,3 +53,32 @@ def buscar():
             return jsonify(categoriasl), 200 #ok
     except:
         return {'msg' : 'Ocurrió un error en el servidor'}, 500
+
+@categorias.route('', methods = ['DELETE'])
+def eliminar():
+    id = request.args.get('id')
+    try:
+        if (id != None):
+            if(tcDatabase.eliminarCategorias(id)):                
+                return {'msg' : 'La categoria fue eliminada exitosamente'}, 200
+            else:
+                return {'msg' : 'No se encontro el id'}, 200
+        else:
+            return {'msg' : 'No se mando el id a eliminar'}, 200
+    except:
+        return {'msg' : 'Ocurrió un error en el servidor'}, 500
+
+@categorias.route('', methods = ['PATCH'])
+def asignarconfig():
+    idcat = request.args.get('idcat')
+    idconfig = request.args.get('idconfig')
+    try:
+        if (idconfig != None and idcat != None):
+            if(tcDatabase.asignarConfiguracion(idcat,idconfig)):                
+                return {'msg' : 'La configuracion fue asignada correctamente'}, 200
+            else:
+                return {'msg' : 'No se encontro el id'}, 200
+        else:
+            return {'msg' : 'No se mando el id a eliminar'}, 200
+    except:
+        return {'msg' : 'Ocurrió un error en el servidor'}, 500

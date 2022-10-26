@@ -12,7 +12,7 @@ class Configuraciones():
     def getdata(self):
         nrecurr = ""
         for i in range(0,len(self.idrecursos)):
-            nrecurr += "[ " + self.idrecursos[i] +", " + self.cantidadr + "], "
+            nrecurr += "[ " + self.idrecursos[i] +"-" + self.cantidadr[i] + "], "
         return{
             'id': self.id,
             'nombre': self.nombre,
