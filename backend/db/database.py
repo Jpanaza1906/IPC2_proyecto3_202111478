@@ -92,7 +92,7 @@ class Database():
         if id in self.idconsumos:
             cont = 0
             for consumo in self.consumos:
-                if consumo.id == id:
+                if str(consumo.id) == str(id):
                     self.consumos.pop(cont)
                     self.idconsumos.pop(cont)
                     return True
