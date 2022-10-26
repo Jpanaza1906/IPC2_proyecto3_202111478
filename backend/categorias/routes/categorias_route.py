@@ -64,7 +64,7 @@ def eliminar():
             else:
                 return {'msg' : 'No se encontro el id'}, 200
         else:
-            return {'msg' : 'No se mando el id a eliminar'}, 200
+            return {'msg' : 'No se tienen los parametros suficientes'}, 200
     except:
         return {'msg' : 'Ocurrió un error en el servidor'}, 500
 
@@ -79,6 +79,6 @@ def asignarconfig():
             else:
                 return {'msg' : 'No se encontro el id'}, 200
         else:
-            return {'msg' : 'No se mando el id a eliminar'}, 200
+            return {'msg' : 'No se tienen los parametros suficientes'}, 200
     except:
         return {'msg' : 'Ocurrió un error en el servidor'}, 500

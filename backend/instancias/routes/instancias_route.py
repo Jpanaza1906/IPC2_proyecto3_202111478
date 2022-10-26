@@ -40,7 +40,7 @@ def modificar():
     except:
         return {'msg' : 'Ocurrió un error en el servidor'}, 500
 
-@instancias.route('', methods = ['PUT'])
+@instancias.route('', methods = ['GET'])
 def buscar():
     id = request.args.get('id')
     try:
@@ -50,5 +50,19 @@ def buscar():
         else:
             instanciasl = tcDatabase.buscarInstancias()
             return jsonify(instanciasl), 200 #ok
+    except:
+        return {'msg' : 'Ocurrió un error en el servidor'}, 500
+
+@instancias.route('', methods = ['DELETE'])
+def eliminar():
+    id = request.args.get('id')
+    try:
+        if (id != None):
+            if(tcDatabase.eliminarInstancias(id)):                
+                return {'msg' : 'La instancia fue eliminada exitosamente'}, 200
+            else:
+                return {'msg' : 'No se encontro el id'}, 200
+        else:
+            return {'msg' : 'No se tienen los parametros suficientes'}, 200
     except:
         return {'msg' : 'Ocurrió un error en el servidor'}, 500

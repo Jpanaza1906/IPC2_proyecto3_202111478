@@ -53,3 +53,17 @@ def buscar():
             return jsonify(recursosl), 200 #ok
     except:
         return {'msg' : 'Ocurrió un error en el servidor'}, 500 #internal server error
+
+@recursos.route('', methods = ['DELETE'])
+def eliminar():
+    id = request.args.get('id')
+    try:
+        if (id != None):
+            if(tcDatabase.eliminarRecursos(id)):                
+                return {'msg' : 'El recurso fue eliminado exitosamente'}, 200
+            else:
+                return {'msg' : 'No se encontro el id'}, 200
+        else:
+            return {'msg' : 'No se tienen los parametros suficientes'}, 200
+    except:
+        return {'msg' : 'Ocurrió un error en el servidor'}, 500

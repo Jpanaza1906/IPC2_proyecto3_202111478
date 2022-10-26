@@ -54,3 +54,32 @@ def buscar():
             return jsonify(clientesl), 200 #ok
     except:
         return {'msg' : 'Ocurrió un error en el servidor'}, 500 #internal server error
+    
+@clientes.route('', methods = ['DELETE'])
+def eliminar():
+    id = request.args.get('id')
+    try:
+        if (id != None):
+            if(tcDatabase.eliminarCliente(id)):                
+                return {'msg' : 'El cliente fue eliminado exitosamente'}, 200
+            else:
+                return {'msg' : 'No se encontro el id'}, 200
+        else:
+            return {'msg' : 'No se tienen los parametros suficientes'}, 200
+    except:
+        return {'msg' : 'Ocurrió un error en el servidor'}, 500
+    
+@clientes.route('', methods = ['PATCH'])
+def asignarinstancia():
+    idcliente = request.args.get('idcliente')
+    idinstancia = request.args.get('idinstancia')
+    try:
+        if (idcliente != None and idinstancia != None):
+            if(tcDatabase.asignarinstancia(idcliente,idinstancia)):                
+                return {'msg' : 'La instancia fue asignada correctamente'}, 200
+            else:
+                return {'msg' : 'No se encontro el id'}, 200
+        else:
+            return {'msg' : 'No se tienen los parametros suficientes'}, 200
+    except:
+        return {'msg' : 'Ocurrió un error en el servidor'}, 500

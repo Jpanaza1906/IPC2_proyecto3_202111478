@@ -52,3 +52,33 @@ def buscar():
             return jsonify(configuracionesl), 200 #ok
     except:
         return {'msg' : 'Ocurrió un error en el servidor'}, 500
+
+@configuraciones.route('', methods = ['DELETE'])
+def eliminar():
+    id = request.args.get('id')
+    try:
+        if (id != None):
+            if(tcDatabase.eliminarConfiguraciones(id)):                
+                return {'msg' : 'La configuracion fue eliminada exitosamente'}, 200
+            else:
+                return {'msg' : 'No se encontro el id'}, 200
+        else:
+            return {'msg' : 'No se tienen los parametros suficientes'}, 200
+    except:
+        return {'msg' : 'Ocurrió un error en el servidor'}, 500
+    
+@configuraciones.route('', methods = ['PATCH'])
+def asignarinstancia():
+    idconfig = request.args.get('idconfig')
+    idrecurso = request.args.get('idrecurso')
+    cantidad = request.args.get('cantidad')
+    try:
+        if (idconfig != None and idrecurso != None and cantidad != None):
+            if(tcDatabase.asignarRecursos(idconfig,idrecurso,cantidad)):                
+                return {'msg' : 'El recurso fue asignado correctamente'}, 200
+            else:
+                return {'msg' : 'No se encontro el id'}, 200
+        else:
+            return {'msg' : 'No se tienen los parametros suficientes'}, 200
+    except:
+        return {'msg' : 'Ocurrió un error en el servidor'}, 500
