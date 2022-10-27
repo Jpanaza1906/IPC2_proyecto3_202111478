@@ -21,6 +21,12 @@ class Database():
         #Instancias
         self.instancias = []
         self.idinstancias = []
+    #LOGIN ------------------------------------------------
+    def login(self, usuario, clave):
+        for cliente in self.clientes:
+            if(usuario == cliente.usuario and clave == cliente.clave):
+                return True
+        return False
     #CLIENTES --------------------------------------------------------------------
     #agregar
     def agregarCliente(self, cliente):
