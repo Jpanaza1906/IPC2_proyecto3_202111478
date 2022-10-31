@@ -26,7 +26,7 @@ CORS(app)
 @app.route('/')
 def index():
     return{"msg": "Si trabaja"}
-
+#LOGIN
 @app.route('/login', methods=['POST'])
 def login():
     body = request.get_json()
@@ -40,7 +40,7 @@ def login():
             pass
     except:
         return {'msg' : 'Ocurrió un error en el servidor'}, 500
-
+#CARGAR ARCHIVO CONFIGURACION XML
 @app.route('/cargarArchivo', methods = ['POST'])
 def cargaCompleta():
     xml = request.data.decode('utf-8')
@@ -128,6 +128,7 @@ def cargaCompleta():
                             tcDatabase.agregarInstancias(ninstancia)
                             tcDatabase.asignarinstancia(id, idinstancia)
     return {'msg': 'Carga completa'},200
+#CARGAR ARCHIVO CONSUMO XML
 @app.route('/cargaConsumo', methods = ['POST'])
 def cargaConsumo():
     xml = request.data.decode('utf-8')
@@ -143,7 +144,20 @@ def cargaConsumo():
         nconsumo = Consumos(nitcliente, idinstancia, tiempo, fechaHora)
         tcDatabase.agregarConsumos(nconsumo)
     return {'msg': 'Carga completa'}, 200
-    
+
+#GENERAR FACTURA
+@app.route('/generarFactura', methods = ['GET'])
+def generarFactura():
+    fechaini = request.args.get('fechaini')
+    fechafin = request.args.get('fechafin')
+    if(fechaini != None and fechafin != ""):
+        tcDatabase.generarFacturas(fechaini, fechafin)
+    pass
+
+#CONSULTAR DATOS
+@app.route('/consultarDatos', methods = ['GET'])
+def consultarDatos():
+    return tcDatabase.guardarBase()
 app.register_blueprint(clientes)
 app.register_blueprint(consumos)
 app.register_blueprint(categorias)

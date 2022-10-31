@@ -68,7 +68,7 @@ def eliminar():
         return {'msg' : 'Ocurrió un error en el servidor'}, 500
     
 @configuraciones.route('', methods = ['PATCH'])
-def asignarinstancia():
+def asignarRecursos():
     idconfig = request.args.get('idconfig')
     idrecurso = request.args.get('idrecurso')
     cantidad = request.args.get('cantidad')

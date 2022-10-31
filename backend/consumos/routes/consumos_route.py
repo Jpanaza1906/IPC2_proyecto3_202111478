@@ -15,7 +15,7 @@ def crear():
                 if(tcDatabase.agregarConsumos(consumo)):
                     return{'msg':'Consumo creado exitosamente.'}, 201 #created
                 else:
-                    return{'msg': 'El consumo ya se encuentra registrado.'}, 406 #Not acceptable
+                    return{'msg': 'El cliente e instancia no se encuentran registrados.'}, 406 #Not acceptable
             else:
                 return{'msg': 'Error en los campos'}, 406 #Not acceptable         
         else:
@@ -25,10 +25,11 @@ def crear():
 
 @consumos.route('', methods = ['GET'])
 def buscar():
-    id = request.args.get('id')
+    idcliente = request.args.get('idcliente')
+    idinstancia = request.args.get('idinstancia')
     try:
-        if(id != None):
-            consumosl = tcDatabase.buscarConsumosid(id)
+        if(idcliente != None and idinstancia != None):
+            consumosl = tcDatabase.buscarConsumosid(idcliente, idinstancia)
             return jsonify(consumosl), 200 #ok
         else:
             consumosl = tcDatabase.buscarConsumos()
@@ -36,16 +37,3 @@ def buscar():
     except:
         return {'msg' : 'Ocurrió un error en el servidor'}, 500 #internal server error
     
-@consumos.route('', methods = ['DELETE'])
-def eliminar():
-    id = request.args.get('id')
-    try:
-        if (id != None):
-            if(tcDatabase.eliminarConsumos(id)):                
-                return {'msg' : 'El consumo fue eliminado exitosamente'}, 200
-            else:
-                return {'msg' : 'No se encontro el id'}, 200
-        else:
-            return {'msg' : 'No se tienen los parametros suficientes'}, 200
-    except:
-        return {'msg' : 'Ocurrió un error en el servidor'}, 500

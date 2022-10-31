@@ -1,6 +1,3 @@
-from http import client
-
-
 class Database():
     def __init__(self):
         #Clientes
@@ -8,7 +5,6 @@ class Database():
         self.idclientes = []
         #Consumos
         self.consumos = []
-        self.idconsumos = []
         #Recursos
         self.recursos = []
         self.idrecursos = []
@@ -88,21 +84,20 @@ class Database():
     #CONSUMOS -------------------------------------------------------------------
     #agregar
     def agregarConsumos(self, consumo):
-        if not(consumo.id in self.idconsumos):
-            self.consumos.append(consumo)
-            self.idconsumos.append(consumo.id)
-            return True
-        return False
-    #eliminar
-    def eliminarConsumos(self, id):
-        if id in self.idconsumos:
+        if (consumo.idcliente in self.idclientes and consumo.idinstancia in self.idinstancias):
             cont = 0
-            for consumo in self.consumos:
-                if str(consumo.id) == str(id):
-                    self.consumos.pop(cont)
-                    self.idconsumos.pop(cont)
-                    return True
+            for cliente in self.clientes:
+                if(cliente.id == consumo.idcliente):
+                    self.clientes[cont].idinstancias.remove(consumo.idinstancia)
                 cont += 1
+            conti = 0
+            for instancia in self.instancias:
+                if(instancia.id == consumo.idinstancia):
+                    self.instancias[conti].estado = "Cancelada"
+                    self.instancias[conti].fechafin = consumo.descripfechahora
+                conti+=1
+            self.consumos.append(consumo)
+            return True
         return False
                     
     #buscar
@@ -112,12 +107,12 @@ class Database():
             consumosf.append(consumo.getdata())
         return consumosf
     
-    def buscarConsumosid(self, id):
-        if id in self.idconsumos:
-            for consumo in self.consumos:
-                if consumo.id == id:
-                    return consumo.getdata()
-        return False
+    def buscarConsumosid(self, idcliente, idinstancia):
+        consumosf = []
+        for consumo in self.consumos:
+            if consumo.idcliente == idcliente and consumo.idinstancia == idinstancia:
+                consumosf.append(consumo.getdata())
+        return consumosf
     
     #RECURSOS -------------------------------------------------------------------
     #agregar
@@ -280,9 +275,12 @@ class Database():
     #agregar
     def agregarInstancias(self, instancia):
         if not(instancia.id in self.idinstancias):
-            self.instancias.append(instancia)
-            self.idinstancias.append(instancia.id)
-            return True
+            if(instancia.idconfig in self.idconfiguraciones):
+                self.instancias.append(instancia)
+                self.idinstancias.append(instancia.id)
+                return True
+            else:
+                return False
         return False
     #modificar
     def modificarInstancias(self, id, idconfig, nombre, fechaini, estado, fechafin):
@@ -321,4 +319,76 @@ class Database():
                 if instancia.id == id:
                     return instancia.getdata()
         return False
+    #generar facturas por consumos
+    def generarFacturas(self, fechaini, fechafin):
+        pass
+    #Guardar en archivo XML
+    def guardarBase(self):
+        texto = "<?xml version=\"1.0\"?>\n<archivoConfiguraciones>\n"
+        
+        #recursos
+        texto += "<listaRecursos>\n"
+        for recurso in self.recursos:
+            texto += "<recurso id=\"" + recurso.id + "\">\n"
+            texto += "<nombre>" + recurso.nombreRecurso + "</nombre>\n"
+            texto += "<abreviatura>" + recurso.abreviatura + "</abreviatura>\n"
+            texto += "<metrica>" + recurso.nombreMetrica + "</metrica>\n"
+            texto += "<tipo>" + recurso.tipo + "</tipo>\n"
+            texto += "<valorXhora>" + recurso.valor + "</valorXhora>\n"
+            texto += "</recurso>"
+        texto += "</listaRecursos>\n"
+        
+        #categorias
+        texto += "<listaCategorias>\n"
+        for categoria in self.categorias:
+            texto += "<categoria id=\"" + categoria.id + "\">\n"
+            texto += "<nombre>" + categoria.nombre + "</nombre>\n"
+            texto += "<descripcion>" + categoria.descripCat + "</descripcion>\n"
+            texto += "<cargaTrabajo>" + categoria.descripTrabajo + "</cargaTrabajo>\n"
+            #configuraciones
+            texto += "<listaConfiguraciones>\n"
+            for idconfig in categoria.idconfiguraciones:
+                for configuracion in self.configuraciones:
+                    if idconfig == configuracion.id:
+                        texto += "<configuracion id=\"" + configuracion.id + "\">\n"
+                        texto += "<nombre>" + configuracion.nombre + "</nombre>\n"
+                        texto += "<descripcion>"+ configuracion.descripcion + "</descripcion>\n"
+                        #recursos
+                        texto += "<recursosConfiguracion>\n"
+                        for i in range(0,len(configuracion.idrecursos)):
+                            texto += "<recurso id=\"" + configuracion.idrecursos[i] + "\">" + configuracion.cantidadr[i] + "</recurso>\n"
+                        texto += "</recursosConfiguracion>\n"
+                        texto += "</configuracion>\n"
+            texto += "</listaConfiguraciones>\n"
+            texto += "</categoria>\n"
+        texto += "</listaCategorias>\n"
+        
+        #clientes
+        texto += "<listaClientes>\n"
+        for cliente in self.clientes:
+            texto += "<cliente nit=\"" + cliente.id + "\">\n"
+            texto += "<nombre>" + cliente.nombre + "</nombre>\n"
+            texto += "<usuario>" + cliente.usuario + "</usuario>\n"
+            texto += "<clave>" + cliente.clave + "</clave>\n"
+            texto += "<direccion>" + cliente.direccion + "</direccion>\n"
+            texto += "<correoElectronico>" + cliente.mail + "</correoElectronico>\n"
+            #instancia
+            texto += "<listaInstancias>\n"
+            for idinstancia in cliente.idinstancias:
+                for instancia in self.instancias:
+                    if idinstancia == instancia.id:
+                        texto += "<instancia id=\"" + instancia.id + "\">\n"
+                        texto += "<idConfiguracion>" + instancia.idconfig + "</idConfiguracion>\n"
+                        texto += "<nombre>" + instancia.nombre + "</nombre>\n"
+                        texto += "<fechaInicio>" + instancia.fechaini + "</fechaInicio>\n"
+                        texto += "<estado>" + instancia.estado + "</estado>\n"
+                        texto += "<fechaFinal>" + instancia.fechafin + "</fechaFinal>"
+                        texto += "</instancia>\n"
+            texto += "</cliente>\n"            
+        texto += "</listaClientes>\n"
+        texto += "</archivoConfiguraciones>"
+        archivo1 = open("base.xml", "w")
+        archivo1.write(texto)
+        archivo1.close()
+        return texto
 tcDatabase = Database()

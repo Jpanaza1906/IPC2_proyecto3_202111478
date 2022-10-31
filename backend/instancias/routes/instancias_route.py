@@ -15,7 +15,7 @@ def crear():
                 if(tcDatabase.agregarInstancias(instancia)):
                     return{'msg': 'Instancia creada exitosamente.'}, 201 #created
                 else:
-                    return{'msg': 'Instancia ya se encuentra registrada.'}, 406 #not acceptable
+                    return{'msg': 'Instancia ya se encuentra registrada o la configuracion no existe.'}, 406 #not acceptable
             else:
                 return{'msg': 'El contenido de los campos no es válido.'}, 400 #bad request
         else:
