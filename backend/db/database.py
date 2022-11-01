@@ -1,3 +1,4 @@
+from cgitb import text
 from datetime import *
 from distutils.command.config import config
 from db.factura import Factura
@@ -535,5 +536,49 @@ class Database():
         pdf.texts(texto)
         pdf.output("Masuso.pdf", 'F')
         
-                
+    def masingresos(self, fechaini, fechafin):
+        fechainicial = self.getfecha(fechaini)
+        fechafinal = self.getfecha(fechafin)
+        nrecursomax= 0
+        recursomax = 0
+        cantidad = 0
+        tiempof = 0
+        for consumo in self.consumos:
+            fechaconsumo = self.getfecha(consumo.descripfechahora)
+            if(fechaconsumo > fechainicial and fechaconsumo < fechafinal):
+                idinstancia = consumo.idinstancia
+                for instancia in self.instancias:
+                    if(instancia.id == idinstancia):
+                        idconfig = instancia.idconfig
+                        for configuracion in self.configuraciones:
+                            if(configuracion.id == idconfig):
+                                recursos = configuracion.idrecursos
+                                cantidades = configuracion.cantidadr
+                                tiempo = consumo.tiempo                                
+                                for i in range(0, len(recursos)):
+                                    for recurso in self.recursos:
+                                        if(recursos[i] == recurso.id):
+                                            total = float(recurso.valor) * float(cantidades[i]) * float(tiempo)
+                                            if(total > nrecursomax):
+                                                nrecursomax = round(total,2)
+                                                recursomax = recurso  
+                                                cantidad = cantidades[i]
+                                                tiempof = tiempo
+        texto = "RECURSO QUE GENERA MAS INGRESO DESDE " + fechaini + " HASTA " + fechafin + "\n\n"
+        texto += "ID: " + recursomax.id + "\n"
+        texto += "NOMBRE: " + recursomax.nombreRecurso + "\n"
+        texto += "ABREVIATURA: " + recursomax.abreviatura + "\n"
+        texto += "METRICA: " + recursomax.nombreMetrica + "\n"
+        texto += "TIPO: " + recursomax.tipo + "\n"
+        texto += "CANTIDAD: " + str(cantidad)+ "\n"
+        texto += "TIEMPO: " + tiempof + " horas\n"
+        texto += "VALOR POR HORA: " + recursomax.valor + "\n\n"
+        texto += "INGRESOS GENERADOS: " + str(nrecursomax)
+        
+        pdf = PDF()
+        pdf.add_page()
+        pdf.logo('logotec.jpg', 0, 0, 60, 45)
+        pdf.texts(texto)
+        pdf.output("Masingreso.pdf", 'F')
+        
 tcDatabase = Database()
