@@ -2,6 +2,7 @@ from datetime import *
 from distutils.command.config import config
 from db.factura import Factura
 from reportes.models.reportes_model import PDF
+from fpdf import FPDF
 class Database():
     def __init__(self):
         #Clientes
@@ -330,9 +331,9 @@ class Database():
     #generar facturas por consumos
     def generarFacturas(self, fechaini, fechafin):
         fechainicial = self.getfecha(fechaini)
-        fechafinal = self.getfecha(fechafin)
-        total = 0
+        fechafinal = self.getfecha(fechafin)        
         for consumo in self.consumos:
+            total = 0
             if(consumo.estadofac == False):
                 consumo.estadofac = True
                 fechaconsumo = self.getfecha(consumo.descripfechahora)
@@ -457,12 +458,12 @@ class Database():
                 texto += "No Factura:" + nfactura.id + "\n"
                 texto += "NIT: " + nfactura.nit +"\n"
                 consumofac = nfactura.consumo
-                tiempo = consumofac.tiempo
+                tiempo = consumofac.tiempo                
+                texto += "Tiempo consumido: " + tiempo + " horas \n\n"
                 idinstancia = consumofac.idinstancia
                 for instancia in self.instancias:
                     if(instancia.id == idinstancia):
                         idconfig = instancia.idconfig
-                        texto += "TOTAL INSTANCIA " + instancia.nombre +"\t" + str(nfactura.monto) + "\n"
                         for configuracion in self.configuraciones:
                             if(configuracion.id == idconfig):
                                 for i in range(0, len(configuracion.idrecursos)):
@@ -471,12 +472,14 @@ class Database():
                                     for recurso in self.recursos:
                                         if(recurso.id == idrecurso):
                                             total = float(cantidad) * float(recurso.valor) * float(tiempo)
-                                            texto += cantidad + " - " + recurso.nombreRecurso + "- valor por hora (" + str(recurso.valor) +")" + "\t" + str(round(total,2)) + "\n"                  
+                                            texto += cantidad + " - " + recurso.nombreRecurso + "- valor por hora (" + str(recurso.valor) +") = Q " + "\t" + str(round(total,2)) + "\n"                                          
+                        texto += "\nTOTAL INSTANCIA: " + instancia.nombre +"\t = Q " + str(nfactura.monto) + "\n"
                 pdf = PDF()
                 pdf.add_page()
+                pdf.logo('logotec.jpg', 0, 0, 60, 45)
                 pdf.texts(texto)
                 pdf.titles("Facturacion")
                 pdf.output(nfactura.id + ".pdf", 'F')
-           
-        
+                return True
+    
 tcDatabase = Database()
