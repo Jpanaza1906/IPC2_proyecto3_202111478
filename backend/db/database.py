@@ -377,7 +377,7 @@ class Database():
             fechabuena = fechabuena.split('/')
             b1 = date(int(fechabuena[2]), int(fechabuena[1]), int(fechabuena[0]))
             return b1                
-        return "mal formato"
+        return False
                 
     #Guardar en archivo XML
     def guardarBase(self):
@@ -481,5 +481,59 @@ class Database():
                 pdf.titles("Facturacion")
                 pdf.output(nfactura.id + ".pdf", 'F')
                 return True
+        return False
     
+    #reporte categorias y configuraciones mas usadas
+    def masusadas(self, fechaini, fechafin):
+        fechainicial = self.getfecha(fechaini)
+        fechafinal = self.getfecha(fechafin)
+        for instancia in self.instancias:
+            for configuracion in self.configuraciones:
+                if configuracion.id == instancia.idconfig:
+                    configuracion.use = 0
+        idsconfig = []
+        for instancia in self.instancias:
+            inifechainstancia = self.getfecha(instancia.fechaini)
+            finfechainstancia = self.getfecha(instancia.fechafin)
+            if(inifechainstancia > fechainicial and inifechainstancia < fechafinal):
+                if(finfechainstancia == False):
+                    idsconfig.append(instancia.idconfig)
+                    for configuracion in self.configuraciones:
+                        if configuracion.id == instancia.idconfig:
+                            configuracion.use += 1
+                elif(finfechainstancia < fechafinal):
+                    idsconfig.append(instancia.idconfig)
+                    for configuracion in self.configuraciones:
+                        if configuracion.id == instancia.idconfig:
+                            configuracion.use += 1
+                
+        nconfigmayor = 0
+        for nidconfig in idsconfig:
+            for configuracion in self.configuraciones:
+                if(nidconfig == configuracion.id):
+                    if (configuracion.use > nconfigmayor):
+                        nconfigmayor = configuracion.use
+        
+        
+        texto = "CATEGORIAS Y CONFIGURACIONES MÁS UTILIZADA DESDE " + fechaini + " HASTA " + fechafin + "\n\n"
+        for nidconfig in idsconfig:
+            for configuracion in self.configuraciones:
+                if(nidconfig == configuracion.id):
+                    if(configuracion.use == nconfigmayor):
+                        for categoria in self.categorias:
+                            for idconfig in categoria.idconfiguraciones:
+                                if(idconfig == configuracion.id):
+                                    texto += "- CATEGORIA: " + categoria.nombre + " - " + categoria.id + "\n"
+                                    texto += "  Descripcion: " + categoria.descripCat + "\n"
+                                    texto += "- CONFIGURACION: " + configuracion.nombre + " - " + configuracion.id + "\n"
+                                    texto += "  Descripcion: " + configuracion.descripcion + "\n"
+                                    texto += "Utilizada: " + str(configuracion.use) + " veces" + "\n\n"
+
+        pdf = PDF()
+        pdf.add_page()
+        pdf.logo('logotec.jpg', 0, 0, 60, 45)
+        pdf.texts(texto)
+        pdf.output("Masuso.pdf", 'F')
+        
+                
 tcDatabase = Database()

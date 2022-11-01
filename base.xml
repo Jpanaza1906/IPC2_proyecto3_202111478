@@ -175,6 +175,18 @@
 <direccion>av 8 nueva direccion de prueba</direccion>
 <correoElectronico>correo1@gmail.com</correoElectronico>
 <listaInstancias>
+<instancia id="I-340">
+<idConfiguracion>CO-111</idConfiguracion>
+<nombre>Primera instancia</nombre>
+<fechaInicio>esta es una descripcion de la fecha 26/02/2003</fechaInicio>
+<estado>Activa</estado>
+<fechaFinal>N/A</fechaFinal></instancia>
+<instancia id="I-336">
+<idConfiguracion>CO-001</idConfiguracion>
+<nombre>Segunda instancia</nombre>
+<fechaInicio>esta es una descripcion de la fecha 26/02/2003</fechaInicio>
+<estado>Cancelada</estado>
+<fechaFinal>27/06/2009</fechaFinal></instancia>
 </listaInstancias>
 </cliente>
 <cliente nit="1159328-6">
@@ -184,6 +196,12 @@
 <direccion>nueva direccion de prueba</direccion>
 <correoElectronico>correo2@yahoo.com</correoElectronico>
 <listaInstancias>
+<instancia id="I-732">
+<idConfiguracion>CO-024</idConfiguracion>
+<nombre>Tercera instancia</nombre>
+<fechaInicio>esta es una descripcion de la fecha 12/09/2015</fechaInicio>
+<estado>Activa</estado>
+<fechaFinal>N/A</fechaFinal></instancia>
 </listaInstancias>
 </cliente>
 <cliente nit="6362564-2">
@@ -193,6 +211,12 @@
 <direccion>direccion 4</direccion>
 <correoElectronico>correo3@hotmail.com</correoElectronico>
 <listaInstancias>
+<instancia id="I-419">
+<idConfiguracion>CO-711</idConfiguracion>
+<nombre>Cuarta instancia</nombre>
+<fechaInicio>esta es una descripcion de la fecha 28/06/1998 y para ver que agarre la primera 30/08/2005</fechaInicio>
+<estado>Cancelada</estado>
+<fechaFinal>la instancia fue cerrada el 15/12/2009</fechaFinal></instancia>
 </listaInstancias>
 </cliente>
 </listaClientes>

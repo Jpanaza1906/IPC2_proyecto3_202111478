@@ -8,17 +8,21 @@ reportes = Blueprint('reportes', __name__, url_prefix="/reportes")
 @reportes.route('/pago', methods = ['GET'])
 def reportePago():
     idfactura = request.args.get('idfactura')
-    if(tcDatabase.detallePago(idfactura)):        
-        return {'msg': 'Se generó el reporte en pdf'}
+    if(idfactura != None):
+        if(tcDatabase.detallePago(idfactura)):        
+            return {'msg': 'Se generó el reporte en pdf'},200
+        else:
+            return {'msg': 'No se pudo ejecutar la peticion'}, 404
     else:
-        return {'msg': 'No se pudo ejecutar la peticion'}
-    pass
+        return {'msg': 'No se pudo ejecutar la peticion'}, 404
 
 @reportes.route('/usadas', methods = ['GET'])
 def reporteUsadas():
     fechaini = request.args.get('fechaini')
     fechafin = request.args.get('fechafin')
-    return {'msg': 'usadas'}
+    if(fechaini != None and fechafin != None):
+        tcDatabase.masusadas(fechaini, fechafin)
+        return {'msg': 'Se generó el reporte en pdf'},200
     pass
 
 @reportes.route('/ingresos', methods = ['GET'])

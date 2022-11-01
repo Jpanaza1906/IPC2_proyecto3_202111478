@@ -6,6 +6,7 @@ class Configuraciones():
         self.descripcion = descripcion
         self.idrecursos = []
         self.cantidadr = []
+        self.use = 0
     def asignar_recursos(self, idrecurso, cantidad):
         self.idrecursos.append(idrecurso)
         self.cantidadr.append(cantidad)
