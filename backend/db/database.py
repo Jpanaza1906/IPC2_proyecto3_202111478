@@ -1,3 +1,7 @@
+from datetime import *
+from distutils.command.config import config
+from db.factura import Factura
+from reportes.models.reportes_model import PDF
 class Database():
     def __init__(self):
         #Clientes
@@ -17,6 +21,8 @@ class Database():
         #Instancias
         self.instancias = []
         self.idinstancias = []
+        #facturas
+        self.facturas = []
     #LOGIN ------------------------------------------------
     def login(self, usuario, clave):
         for cliente in self.clientes:
@@ -88,13 +94,15 @@ class Database():
             cont = 0
             for cliente in self.clientes:
                 if(cliente.id == consumo.idcliente):
-                    self.clientes[cont].idinstancias.remove(consumo.idinstancia)
+                    if(len(self.clientes[cont].idinstancias) > 0):
+                        self.clientes[cont].idinstancias.remove(consumo.idinstancia)
                 cont += 1
             conti = 0
             for instancia in self.instancias:
                 if(instancia.id == consumo.idinstancia):
                     self.instancias[conti].estado = "Cancelada"
                     self.instancias[conti].fechafin = consumo.descripfechahora
+                    consumo.instancia = instancia
                 conti+=1
             self.consumos.append(consumo)
             return True
@@ -321,7 +329,55 @@ class Database():
         return False
     #generar facturas por consumos
     def generarFacturas(self, fechaini, fechafin):
-        pass
+        fechainicial = self.getfecha(fechaini)
+        fechafinal = self.getfecha(fechafin)
+        total = 0
+        for consumo in self.consumos:
+            if(consumo.estadofac == False):
+                consumo.estadofac = True
+                fechaconsumo = self.getfecha(consumo.descripfechahora)
+                if(fechaconsumo < fechafinal and fechaconsumo > fechainicial):
+                    idinstancia = consumo.idinstancia
+                    for instancia in self.instancias:
+                        if(idinstancia == instancia.id):
+                            idconfig = instancia.idconfig
+                            for configuracion in self.configuraciones:
+                                if(idconfig == configuracion.id):
+                                    for i in range(0,len(configuracion.idrecursos)):
+                                        idrecur = configuracion.idrecursos[i]
+                                        cantidad = configuracion.cantidadr[i]
+                                        tiempo = consumo.tiempo
+                                        for recurso in self.recursos:
+                                            if idrecur == recurso.id:
+                                                total += (float(recurso.valor) * float(cantidad) * float(tiempo))                                    
+                    nfactura = Factura(consumo.idcliente, consumo.descripfechahora, round(total,2))
+                    nfactura.consumo = consumo
+                    self.facturas.append(nfactura)
+        facturasf = []
+        for factura in self.facturas:
+            facturasf.append(factura.getdata())
+        return facturasf
+    def getfecha(self, fecha):
+        numeros = "0123456789"
+        fechabuena = ""
+        contsimb = 0
+        contnum = 0
+        for cadachar in fecha:
+            if numeros.find(cadachar) != -1:
+                fechabuena += cadachar
+                contnum += 1
+            elif cadachar == "/" and contnum == 2:
+                fechabuena += cadachar
+                contsimb += 1
+                contnum = 0
+            elif contnum == 4 and contsimb == 2:
+                break
+        if contnum == 4 and contsimb == 2:
+            fechabuena = fechabuena.split('/')
+            b1 = date(int(fechabuena[2]), int(fechabuena[1]), int(fechabuena[0]))
+            return b1                
+        return "mal formato"
+                
     #Guardar en archivo XML
     def guardarBase(self):
         texto = "<?xml version=\"1.0\"?>\n<archivoConfiguraciones>\n"
@@ -384,11 +440,43 @@ class Database():
                         texto += "<estado>" + instancia.estado + "</estado>\n"
                         texto += "<fechaFinal>" + instancia.fechafin + "</fechaFinal>"
                         texto += "</instancia>\n"
-            texto += "</cliente>\n"            
+            texto += "</listaInstancias>\n"
+            texto += "</cliente>\n"           
         texto += "</listaClientes>\n"
         texto += "</archivoConfiguraciones>"
         archivo1 = open("base.xml", "w")
         archivo1.write(texto)
         archivo1.close()
         return texto
+    
+    #reporte detalle de pago
+    def detallePago(self, idfactura):
+        texto = ""
+        for nfactura in self.facturas:
+            if(nfactura.id == idfactura): 
+                texto += "No Factura:" + nfactura.id + "\n"
+                texto += "NIT: " + nfactura.nit +"\n"
+                consumofac = nfactura.consumo
+                tiempo = consumofac.tiempo
+                idinstancia = consumofac.idinstancia
+                for instancia in self.instancias:
+                    if(instancia.id == idinstancia):
+                        idconfig = instancia.idconfig
+                        texto += "TOTAL INSTANCIA " + instancia.nombre +"\t" + str(nfactura.monto) + "\n"
+                        for configuracion in self.configuraciones:
+                            if(configuracion.id == idconfig):
+                                for i in range(0, len(configuracion.idrecursos)):
+                                    idrecurso = configuracion.idrecursos[i]
+                                    cantidad = configuracion.cantidadr[i]
+                                    for recurso in self.recursos:
+                                        if(recurso.id == idrecurso):
+                                            total = float(cantidad) * float(recurso.valor) * float(tiempo)
+                                            texto += cantidad + " - " + recurso.nombreRecurso + "- valor por hora (" + str(recurso.valor) +")" + "\t" + str(round(total,2)) + "\n"                  
+                pdf = PDF()
+                pdf.add_page()
+                pdf.texts(texto)
+                pdf.titles("Facturacion")
+                pdf.output(nfactura.id + ".pdf", 'F')
+           
+        
 tcDatabase = Database()

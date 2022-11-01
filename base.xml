@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<archivoConfiguraciones>
+<listaRecursos>
+</listaRecursos>
+<listaCategorias>
+</listaCategorias>
+<listaClientes>
+<cliente nit="12">
+<nombre>David</nombre>
+<usuario>Jpb</usuario>
+<clave>1233</clave>
+<direccion>villa nueva</direccion>
+<correoElectronico>josepanaza@gmail.com</correoElectronico>
+<listaInstancias>
+</listaInstancias>
+</cliente>
+<cliente nit="123">
+<nombre>David</nombre>
+<usuario>Jpb</usuario>
+<clave>1233</clave>
+<direccion>villa nueva</direccion>
+<correoElectronico>josepanaza@gmail.com</correoElectronico>
+<listaInstancias>
+</listaInstancias>
+</cliente>
+</listaClientes>
+</archivoConfiguraciones>
